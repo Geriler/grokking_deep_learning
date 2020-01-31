@@ -1,32 +1,22 @@
-import numpy as np
+weight = 0.5
+input = 0.5
+goal_predication = 0.8
 
+step_amount = 0.001
 
-def neural_network(input, weights):
-    hid = input.dot(weights[0])
-    pred = hid.dot(weights[1])
-    pred = [round(elem, 3) for elem in pred]
-    return pred
+for iteration in range(1101):
+    predication = input * weight
+    error = (predication - goal_predication) ** 2
+    print("Error: " + str(error) + ".\tPredication: " + str(round(predication, 5)) + ".\tWeight: " + str(weight))
 
+    up_predication = input * (weight + step_amount)
+    up_error = (goal_predication - up_predication) ** 2
 
-in_wgt = np.array([
-    [0.1, 0.2, -0.1],
-    [-0.1, 0.1, 0.9],
-    [0.1, 0.4, 0.1]
-]).T
+    down_predication = input * (weight - step_amount)
+    down_error = (goal_predication - down_predication) ** 2
 
-hp_wgt = np.array([
-    [0.3, 1.1, -0.3],
-    [0.1, 0.2, 0.0],
-    [0.0, 1.3, 0.1]
-]).T
+    if down_error < up_error:
+        weight -= step_amount
 
-weights = [in_wgt, hp_wgt]
-
-toes = np.array([8.5, 9.5, 9.9, 9.0])
-wlrec = np.array([0.65, 0.8, 0.8, 0.9])
-nfans = np.array([1.2, 1.3, 0.5, 1.0])
-
-for i in range(len(toes)):
-    input = np.array([toes[i], wlrec[i], nfans[i]])
-    pred = neural_network(input, weights)
-    print(pred)
+    if down_error > up_error:
+        weight += step_amount
